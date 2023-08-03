@@ -1,20 +1,35 @@
 #include "Geometry.h"
 #include <iostream>
 
-void Coord::SetCoord(int xx, int yy) {
-    x = xx;
-    y = yy;
-}
-
 Coord& Coord::operator=(Coord c) {
     this->x = c.x;
     this->y = c.y;
     return *this;
 }
 
+Coord Coord::operator+(Coord c) {
+    Coord temp;
+    temp.x = x + c.x;
+    temp.y = y + c.y;
+    return temp;
+}
+
+Coord Coord::operator-(Coord c) {
+    Coord temp;
+    temp.x = x - c.x;
+    temp.y = y - c.y;
+    return temp;
+}
+
 std::ostream& operator<<(std::ostream& stream, Coord& coords) {
     stream << "(" << coords.getX() << "," << coords.getY() << ")";
     return stream;
+}
+
+Rect& Rect::operator=(Rect r) {
+    this->minPoint = r.minPoint;
+    this->maxPoint = r.maxPoint;
+    return *this;
 }
 
 bool Rect::isValid() {

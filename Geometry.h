@@ -7,10 +7,14 @@ class Coord {
 public:
 	Coord() { x = 0; y = 0; }
 	Coord(int xx, int yy) : x(xx), y(yy) {}
-	void SetCoord(int xx, int yy);
+	void SetCoord(int xx, int yy) { x = xx; y = yy; }
+	void SetX(int xx) { x = xx; }
+	void SetY(int yy) { y = yy; }
 	int getX() { return x; }
 	int getY() { return y; }
 	Coord& operator=(Coord c);
+	Coord operator+(Coord c);
+	Coord operator-(Coord c);
 	friend std::ostream& operator<<(std::ostream& stream, Coord& coords);
 };
 
@@ -24,8 +28,13 @@ class Rect : public Figure {
 public:
 	Rect() {}
 	Rect(Coord min, Coord max) : minPoint(min), maxPoint(max) {}
-	Coord getMinPoint() { return minPoint; } // may delete
-	Coord getMaxPoint() { return maxPoint; } // may delete
+	Coord getMinPoint() { return minPoint; }
+	Coord getMaxPoint() { return maxPoint; }
+	int getTop() { return maxPoint.getY(); }
+	int getLeft() { return maxPoint.getX(); }
+	int getBottom() { return minPoint.getY(); }
+	int getRight() { return minPoint.getY(); }
+	Rect& operator=(Rect r); // протестировать
 	void showInfo() { std::cout << "Нижний угол: " << minPoint << ", верхний угол: " << maxPoint; } // на удаление (+инклуд)
 	bool isValid() override;
 	bool contain(Coord coord);
