@@ -15,7 +15,7 @@ public:
 	Coord& operator=(Coord c);
 	Coord operator+(Coord c);
 	Coord operator-(Coord c);
-	friend std::ostream& operator<<(std::ostream& stream, Coord& coords);
+	friend std::ostream& operator<<(std::ostream &stream, Coord &coords);
 };
 
 class Figure {
@@ -34,7 +34,8 @@ public:
 	int getLeft() { return maxPoint.getX(); }
 	int getBottom() { return minPoint.getY(); }
 	int getRight() { return minPoint.getY(); }
-	Rect& operator=(Rect r); // протестировать
+	Coord getCenter();
+	Rect& operator=(Rect r);
 	void showInfo() { std::cout << "Нижний угол: " << minPoint << ", верхний угол: " << maxPoint; } // на удаление (+инклуд)
 	bool isValid() override;
 	bool contain(Coord coord);

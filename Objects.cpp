@@ -1,6 +1,6 @@
 #include "Objects.h"
 
-void Bolt::setVertices(int rad, vector<Coord> &v) {
+void Bolt::setVertices(int rad, std::vector<Coord> &v) {
 	v.push_back(Coord(center.getX() - rad, center.getY()));
 	v.push_back(Coord(center.getX() + rad, center.getY()));
 	v.push_back(Coord(center.getX(), center.getY() - rad));
@@ -14,14 +14,10 @@ void Bolt::setVertices(int rad, vector<Coord> &v) {
 	v.push_back(Coord(center.getX() + leg, center.getY() + leg));
 }
 
-bool Bolt::setCenter(Coord coord) {
-	if (outterVertices.empty()) {
-		center = coord;
-		setVertices(head.getInnerRad(), innerVertices);
-		setVertices(head.getOutterRad(), outterVertices);
-		return true;
-	}
-	return false;
+void Bolt::setCenter(Coord coord) {
+	center = coord;
+	setVertices(head.getInnerRad(), innerVertices);
+	setVertices(head.getOutterRad(), outterVertices);
 }
 
 bool Bolt::isValid() {
@@ -48,6 +44,6 @@ Rect Bolt::turnIntoRect() {
 
 void Bolt::showInfo() {
 	std::cout << "Внутренний r: " << head.getInnerRad() << ", внешний r: " << head.getOutterRad() <<
-		". Центр: " << center << endl;
+		". Центр: " << center << std::endl;
 }
 

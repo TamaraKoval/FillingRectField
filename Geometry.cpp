@@ -21,9 +21,15 @@ Coord Coord::operator-(Coord c) {
     return temp;
 }
 
-std::ostream& operator<<(std::ostream& stream, Coord& coords) {
+std::ostream& operator<<(std::ostream &stream, Coord &coords) {
     stream << "(" << coords.getX() << "," << coords.getY() << ")";
     return stream;
+}
+
+Coord Rect::getCenter() {
+    int centerX = (minPoint.getX() + maxPoint.getX()) / 2;
+    int centerY = (minPoint.getY() + maxPoint.getY()) / 2;
+    return Coord(centerX, centerY);
 }
 
 Rect& Rect::operator=(Rect r) {

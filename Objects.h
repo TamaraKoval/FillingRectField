@@ -2,18 +2,15 @@
 #include "Geometry.h"
 #include <vector>
 
-using namespace std;
-
 class Bolt {
 	DoubleCircle head;
 	Coord center;
-	vector<Coord> innerVertices, outterVertices;
-	void setVertices(int rad, vector<Coord> &v);
-
+	std::vector<Coord> innerVertices, outterVertices;
+	void setVertices(int rad, std::vector<Coord> &v);
 public:
-	Bolt() { setCenter(center); }
-	Bolt(DoubleCircle circle) : head(circle), center(0, 0) { setCenter(center); }
-	bool setCenter(Coord coord);
+	Bolt() { }
+	Bolt(DoubleCircle circle) : head(circle) { }
+	void setCenter(Coord coord);
 	Coord& getCenter() { return center; }
 	int getInnerRad() { return head.getInnerRad(); }
 	int getOutterRad() { return head.getOutterRad(); }
