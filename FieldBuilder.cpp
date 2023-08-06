@@ -9,7 +9,7 @@ void nextDir(Direction& dir) {
 
 void FieldBuilder::setCenterCoord(Direction& dir, Rect& checkingField, Bolt& b, bool first) {
     Coord center;
-    double rad = first ? b.getInnerRad() / 2 : b.getOutterRad() / 2;
+    double rad = first ? b.getInnerRad()  : b.getOutterRad() ;
     switch (dir) {
     case RIGHT:
         center.SetCoord(checkingField.getLeft() + rad, checkingField.getTop() - rad);
@@ -28,8 +28,8 @@ void FieldBuilder::setCenterCoord(Direction& dir, Rect& checkingField, Bolt& b, 
 
 void FieldBuilder::shiftBoltCenter(Direction& dir, Obstruction& obstruction, Bolt& b) {
     Coord center = b.getCenter();
-    double shift = obstruction.isHard() ? b.getOutterRad() / 2 : b.getInnerRad() / 2;
-    shift += 0.5;
+    double shift = obstruction.isHard() ? b.getOutterRad()  : b.getInnerRad() ;
+    shift += 1;
 
     switch (dir) {
     case RIGHT:
@@ -59,6 +59,7 @@ Rect FieldBuilder::narrowedFirstField(vector<Bolt>& currentLevel, bool& first) {
 
 Rect FieldBuilder::narrowedNextField(vector<Bolt>& currentLevel, Rect& field) {
     double shift = max_element(currentLevel.begin(), currentLevel.end())->getOutterRad();
+    shift *= 2;
     Coord shiftedValue(shift, shift);
     return { field.getMinPoint() + shiftedValue, field.getMaxPoint() - shiftedValue };
 }
@@ -97,11 +98,11 @@ bool FieldBuilder::putTwoInCenter(Rect& checkingField, vector<Obstruction>& obst
     Coord lessCenter, moreCenter;
     Coord center = checkingField.getCenter();
     lessCenter = moreCenter = center;
-    double lessRad = first ? less.getInnerRad() / 2 : less.getOutterRad() / 2;
+    double lessRad = first ? less.getInnerRad() : less.getOutterRad();
     lessCenter.SetX(center.getX() - lessRad);
     less.setCenter(lessCenter);
     if (doubleTryForCentering(LEFT, checkingField, obstructionsToCheck, less, first)) {
-        double moreRad = first ? more.getInnerRad() / 2 : more.getOutterRad() / 2;
+        double moreRad = first ? more.getInnerRad() : more.getOutterRad();
         moreCenter.SetX(center.getX() + moreRad);
         more.setCenter(moreCenter);
         return doubleTryForCentering(RIGHT, checkingField, obstructionsToCheck, more, first);

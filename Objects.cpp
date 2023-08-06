@@ -34,9 +34,9 @@ void Bolt::setVertices(double rad, vector<Coord>& v) {
 void Bolt::setCenter(Coord coord) {
     center = coord;
     innerVertices.clear();
-    setVertices(head.getInnerRad() / 2, innerVertices);
+    setVertices(head.getInnerRad() , innerVertices);
     outterVertices.clear();
-    setVertices(head.getOutterRad() / 2, outterVertices);
+    setVertices(head.getOutterRad(), outterVertices);
 }
 
 bool Bolt::isValid() const {
@@ -44,7 +44,7 @@ bool Bolt::isValid() const {
 }
 
 double Bolt::calcPotencial() {
-    return head.getInnerRad() / 2 + head.getOutterRad() / 2;
+    return head.getInnerRad()  + head.getOutterRad() ;
 }
 
 bool Bolt::outterCircleInside(const Rect& field) {
@@ -82,7 +82,7 @@ bool Bolt::intersect(const Obstruction& obstruction) {
 }
 
 Rect Bolt::turnIntoRect() {
-    double shift = head.getOutterRad() / 2;
+    double shift = head.getOutterRad();
     Coord min(center.getX() - shift, center.getY() - shift);
     Coord max(center.getX() + shift, center.getY() + shift);
     return { min, max };

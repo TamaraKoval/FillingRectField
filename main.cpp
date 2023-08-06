@@ -23,8 +23,8 @@ int main() {
     builder.addBolt(b1);
     builder.addBolt(b2);
     builder.addBolt(b3);
-    builder.addBolt(b4);
-    builder.addBolt(b5);
+    //builder.addBolt(b4);
+    //builder.addBolt(b5);
 
     if (builder.build()) {
         std::cout << "Сборка удалась" << std::endl;
