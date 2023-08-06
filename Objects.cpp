@@ -1,27 +1,50 @@
+#include <iostream>
 #include "Objects.h"
 
-void Bolt::setVertices(int rad, std::vector<Coord>& v) {
-    v.emplace_back(center.getX() - rad, center.getY());
-    v.emplace_back(center.getX() + rad, center.getY());
-    v.emplace_back(center.getX(), center.getY() - rad);
-    v.emplace_back(center.getX(), center.getY() + rad);
+bool Obstruction::isValid() const {
+    return borders.isValid();
+}
 
-    int leg = (int)(sqrt(rad ^ 2 / 2));
-    leg++;
-    v.emplace_back(center.getX() - leg, center.getY() - leg);
-    v.emplace_back(center.getX() - leg, center.getY() + leg);
-    v.emplace_back(center.getX() + leg, center.getY() - leg);
-    v.emplace_back(center.getX() + leg, center.getY() + leg);
+void Bolt::enteringAxialVertices(double leg, vector<Coord>& v) {
+    v.emplace_back(center.getX(), center.getY() + leg);
+    v.emplace_back(center.getX() + leg, center.getY());
+    v.emplace_back(center.getX(), center.getY() - leg);
+    v.emplace_back(center.getX() - leg, center.getY());
+}
+
+void Bolt::enteringVertices(double leg1, double leg2, vector<Coord>& v) {
+    v.emplace_back(center.getX() + leg1, center.getY() + leg2);
+    v.emplace_back(center.getX() + leg1, center.getY() - leg2);
+    v.emplace_back(center.getX() - leg1, center.getY() - leg2);
+    v.emplace_back(center.getX() - leg1, center.getY() + leg2);
+}
+
+void Bolt::setVertices(double rad, vector<Coord>& v) {
+    enteringAxialVertices(rad, v);
+
+    double leg45 = sqrt(pow(rad, 2) / 2);
+    enteringVertices(leg45, leg45, v);
+
+    double leg30X = rad / 2;
+    double leg30Y = sqrt(pow(rad, 2) - pow(leg30X, 2));
+    enteringVertices(leg30X, leg30Y, v);
+    enteringVertices(leg30Y, leg30X, v);
 }
 
 void Bolt::setCenter(Coord coord) {
     center = coord;
-    setVertices(head.getInnerRad(), innerVertices);
-    setVertices(head.getOutterRad(), outterVertices);
+    innerVertices.clear();
+    setVertices(head.getInnerRad() / 2, innerVertices);
+    outterVertices.clear();
+    setVertices(head.getOutterRad() / 2, outterVertices);
 }
 
-bool Bolt::isValid() {
+bool Bolt::isValid() const {
     return head.isValid();
+}
+
+double Bolt::calcPotencial() {
+    return head.getInnerRad() / 2 + head.getOutterRad() / 2;
 }
 
 bool Bolt::outterCircleInside(const Rect& field) {
@@ -32,7 +55,6 @@ bool Bolt::outterCircleInside(const Rect& field) {
 }
 
 bool Bolt::innerCircleInside(const Rect& field) {
-    if (!field.contain(center)) return false;
     for (Coord c : innerVertices) {
         if (!field.contain(c)) return false;
     }
@@ -40,19 +62,30 @@ bool Bolt::innerCircleInside(const Rect& field) {
 }
 
 bool Bolt::allInside(const Rect& field, bool checkInner) {
+    if (!field.contain(center)) return false;
     if (checkInner) return innerCircleInside(field);
     return outterCircleInside(field);
 }
 
-bool Bolt::intersect(const Obstruction& rect) {
-    return !allInside(rect, !rect.isHard());
+bool Bolt::intersect(const Obstruction& obstruction) {
+    Rect rect = obstruction.getBorders();
+    if (rect.contain(center)) return true;
+    if (obstruction.isHard()) {
+        for (Coord c : outterVertices) {
+            if (rect.contain(c)) return true;
+        }
+    }
+    for (Coord c : innerVertices) {
+        if (rect.contain(c)) return true;
+    }
+    return false;
 }
 
 Rect Bolt::turnIntoRect() {
-    Coord min(center.getX() - head.getOutterRad(), center.getY() - head.getOutterRad());
-    Coord max(center.getX() + head.getOutterRad(), center.getY() + head.getOutterRad());
-    Rect temp(min, max);
-    return temp;
+    double shift = head.getOutterRad() / 2;
+    Coord min(center.getX() - shift, center.getY() - shift);
+    Coord max(center.getX() + shift, center.getY() + shift);
+    return { min, max };
 }
 
 void Bolt::showInfo() {

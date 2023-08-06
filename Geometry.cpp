@@ -1,20 +1,19 @@
 #include "Geometry.h"
-#include <iostream>
 
-Coord& Coord::operator=(Coord c) {
+Coord& Coord::operator=(const Coord& c) {
     this->x = c.x;
     this->y = c.y;
     return *this;
 }
 
-Coord Coord::operator+(Coord c) const {
+Coord Coord::operator+(const Coord& c) const {
     Coord temp;
     temp.x = x + c.x;
     temp.y = y + c.y;
     return temp;
 }
 
-Coord Coord::operator-(Coord c) const {
+Coord Coord::operator-(const Coord& c) const {
     Coord temp;
     temp.x = x - c.x;
     temp.y = y - c.y;
@@ -27,8 +26,8 @@ std::ostream& operator<<(std::ostream& stream, Coord& coords) {
 }
 
 Coord Rect::getCenter() {
-    int centerX = (minPoint.getX() + maxPoint.getX()) / 2;
-    int centerY = (minPoint.getY() + maxPoint.getY()) / 2;
+    double centerX = (minPoint.getX() + maxPoint.getX()) / 2;
+    double centerY = (minPoint.getY() + maxPoint.getY()) / 2;
     return { centerX, centerY };
 }
 
@@ -38,15 +37,14 @@ Rect& Rect::operator=(const Rect& r) {
     return *this;
 }
 
-bool Rect::isValid() {
+bool Rect::isValid() const {
     return minPoint.getX() < maxPoint.getX() && minPoint.getY() < maxPoint.getY();
 }
 
-bool Rect::contain(Coord coord) const {
-    return coord.getX() <= maxPoint.getX() && coord.getX() >= minPoint.getX() &&
-        coord.getY() <= maxPoint.getY() && coord.getY() >= minPoint.getY();
+bool Rect::contain(const Coord& coord) const {
+    return coord.getX() <= maxPoint.getX() && coord.getX() >= minPoint.getX() && coord.getY() <= maxPoint.getY() && coord.getY() >= minPoint.getY();
 }
 
-bool DoubleCircle::isValid() {
+bool DoubleCircle::isValid() const {
     return innerRad > 0 && outterRad > 0 && outterRad >= innerRad;
 }

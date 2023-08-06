@@ -1,55 +1,52 @@
 #pragma once
 #include <ostream>
-#include <iostream>
 
 class Coord {
-    int x, y;
+    double x, y;
 public:
-    Coord() { x = 0; y = 0; }
-    Coord(int xx, int yy) : x(xx), y(yy) {}
-    void SetCoord(int xx, int yy) { x = xx; y = yy; }
-    void SetX(int xx) { x = xx; }
-    void SetY(int yy) { y = yy; }
-    [[nodiscard]] int getX() const { return x; }
-    [[nodiscard]] int getY() const { return y; }
-    Coord& operator=(Coord c);
-    Coord operator+(Coord c) const;
-    Coord operator-(Coord c) const;
+    Coord() : x(0), y(0) {}
+    Coord(double xx, double yy) : x(xx), y(yy) {}
+    void SetCoord(double xx, double yy) { x = xx; y = yy; }
+    void SetX(double xx) { x = xx; }
+    void SetY(double yy) { y = yy; }
+    [[nodiscard]] double getX() const { return x; }
+    [[nodiscard]] double getY() const { return y; }
+    Coord& operator=(const Coord& c);
+    Coord operator+(const Coord& c) const;
+    Coord operator-(const Coord& c) const;
     friend std::ostream& operator<<(std::ostream& stream, Coord& coords);
 };
 
-class Figure {
+class Validator {
 public:
-    virtual bool isValid() = 0;
+    [[nodiscard]] virtual bool isValid() const = 0;
 };
 
-class Rect : public Figure {
+class Rect : public Validator {
     Coord minPoint, maxPoint;
 public:
     Rect() = default;
     Rect(Coord min, Coord max) : minPoint(min), maxPoint(max) {}
-    Coord getMinPoint() { return minPoint; }
-    Coord getMaxPoint() { return maxPoint; }
-    int getTop() { return maxPoint.getY(); }
-    int getLeft() { return minPoint.getX(); }
-    int getBottom() { return minPoint.getY(); }
-    int getRight() { return maxPoint.getX(); }
+    [[nodiscard]] Coord getMinPoint() const { return minPoint; }
+    [[nodiscard]] Coord getMaxPoint() const { return maxPoint; }
+    [[nodiscard]] double getTop() const { return maxPoint.getY(); }
+    [[nodiscard]] double getLeft() const { return minPoint.getX(); }
+    [[nodiscard]] double getBottom() const { return minPoint.getY(); }
+    [[nodiscard]] double getRight() const { return maxPoint.getX(); }
     Coord getCenter();
     Rect& operator=(const Rect& r);
-    void showInfo() { std::cout << "Ќижний угол: " << minPoint << ", верхний угол: " << maxPoint; } // на удаление (+инклуд)
-    bool isValid() override;
-    [[nodiscard]] bool contain(Coord coord) const;
+    [[nodiscard]] bool isValid() const override;
+    [[nodiscard]] bool contain(const Coord& coord) const;
 };
 
-class DoubleCircle : public Figure {
-    int innerRad, outterRad;
+class DoubleCircle : public Validator {
+    double innerRad, outterRad;
 public:
     DoubleCircle() : innerRad(0), outterRad(0) {}
-    DoubleCircle(int innerR, int outterR) : innerRad(innerR), outterRad(outterR) {}
-    void showInfo() const { std::cout << "¬нутренний r: " << innerRad << ", внешний r: " << outterRad; } // на удаление (+инклуд)
-    [[nodiscard]] int getInnerRad() const { return innerRad; }
-    [[nodiscard]] int getOutterRad() const { return outterRad; }
-    bool isValid() override;
+    DoubleCircle(double innerR, double outterR) : innerRad(innerR), outterRad(outterR) {}
+    [[nodiscard]] double getInnerRad() const { return innerRad; }
+    [[nodiscard]] double getOutterRad() const { return outterRad; }
+    [[nodiscard]] bool isValid() const override;
     bool operator<(const DoubleCircle& dc) const { return outterRad < dc.outterRad; }
     bool operator>(const DoubleCircle& dc) const { return outterRad > dc.outterRad; }
 };

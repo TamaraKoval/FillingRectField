@@ -3,8 +3,6 @@
 #include "Objects.h"
 #include "FieldBuilder.h"
 
-using namespace std;
-
 int main() {
     setlocale(LC_ALL, "Russian");
 
@@ -29,16 +27,13 @@ int main() {
     builder.addBolt(b5);
 
     if (builder.build()) {
-        for (Bolt b : builder.installedBolts) b.showInfo();
+        std::cout << "Сборка удалась" << std::endl;
+        vector<Bolt> bolts = builder.getInstalledBolts();
+        for (Bolt b : bolts) b.showInfo();
     }
     else {
-        cout << "Что-то пошло не так" << endl;
+        std::cout << "Что-то пошло не так" << std::endl;
     }
-
-
-
-
-
 
     return 0;
 }
