@@ -14,6 +14,9 @@ public:
     Coord& operator=(const Coord& c);
     Coord operator+(const Coord& c) const;
     Coord operator-(const Coord& c) const;
+    Coord operator+(double num) const;
+    Coord operator-(double num) const;
+    Coord operator*(double num) const;
     friend std::ostream& operator<<(std::ostream& stream, Coord& coords);
 };
 
@@ -22,22 +25,26 @@ public:
     [[nodiscard]] virtual bool isValid() const = 0;
 };
 
-class Rect : public Validator {
+
+class RectByCoords : public Validator {
     Coord minPoint, maxPoint;
 public:
-    Rect() = default;
-    Rect(Coord min, Coord max) : minPoint(min), maxPoint(max) {}
+    RectByCoords() = default;
+    RectByCoords(Coord min, Coord max) : minPoint(min), maxPoint(max) {}
     [[nodiscard]] Coord getMinPoint() const { return minPoint; }
     [[nodiscard]] Coord getMaxPoint() const { return maxPoint; }
     [[nodiscard]] double getTop() const { return maxPoint.getY(); }
     [[nodiscard]] double getLeft() const { return minPoint.getX(); }
     [[nodiscard]] double getBottom() const { return minPoint.getY(); }
     [[nodiscard]] double getRight() const { return maxPoint.getX(); }
+    double getHeight();
+    double getWidth();
     Coord getCenter();
-    Rect& operator=(const Rect& r);
+    RectByCoords& operator=(const RectByCoords& r);
     [[nodiscard]] bool isValid() const override;
     [[nodiscard]] bool contain(const Coord& coord) const;
 };
+
 
 class DoubleCircle : public Validator {
     double innerRad, outterRad;
@@ -50,4 +57,3 @@ public:
     bool operator<(const DoubleCircle& dc) const { return outterRad < dc.outterRad; }
     bool operator>(const DoubleCircle& dc) const { return outterRad > dc.outterRad; }
 };
-

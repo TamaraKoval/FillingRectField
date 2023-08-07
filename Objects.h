@@ -5,13 +5,13 @@
 using std::vector;
 
 class Obstruction : public Validator {
-    Rect borders;
+    RectByCoords borders;
     bool hard = false;
 public:
     Obstruction() = default;
-    Obstruction(const Rect& borders, bool hard) : borders(borders), hard(hard) {}
-    explicit Obstruction(const Rect& borders) : borders(borders) {}
-    [[nodiscard]] Rect getBorders() const { return borders; }
+    Obstruction(const RectByCoords& borders, bool hard) : borders(borders), hard(hard) {}
+    explicit Obstruction(const RectByCoords& borders) : borders(borders) {}
+    [[nodiscard]] RectByCoords getBorders() const { return borders; }
     [[nodiscard]] bool isHard() const { return hard; }
     [[nodiscard]] bool isValid() const override;
 };
@@ -34,11 +34,10 @@ public:
     bool operator>(const Bolt& b) const { return head > b.head; }
     [[nodiscard]] bool isValid() const override;
     double calcPotencial();
-    bool outterCircleInside(const Rect& field);
-    bool innerCircleInside(const Rect& field);
-    bool allInside(const Rect& field, bool checkInner = true);
+    bool outterCircleInside(const RectByCoords& field);
+    bool innerCircleInside(const RectByCoords& field);
+    bool allInside(const RectByCoords& field, bool checkInner = true);
     bool intersect(const Obstruction& obstruction);
-    Rect turnIntoRect();
+    RectByCoords turnIntoRect();
     void showInfo(); // на удаление (+инклуд)
 };
-

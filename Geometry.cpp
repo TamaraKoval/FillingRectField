@@ -20,28 +20,57 @@ Coord Coord::operator-(const Coord& c) const {
     return temp;
 }
 
+Coord Coord::operator+(double num) const {
+    Coord temp;
+    temp.x = x + num;
+    temp.y = y + num;
+    return temp;
+}
+
+Coord Coord::operator-(double num) const {
+    Coord temp;
+    temp.x = x - num;
+    temp.y = y - num;
+    return temp;
+}
+
+Coord Coord::operator*(double num) const {
+    Coord temp;
+    temp.x = x * num;
+    temp.y = y * num;
+    return temp;
+}
+
 std::ostream& operator<<(std::ostream& stream, Coord& coords) {
     stream << "(" << coords.getX() << "," << coords.getY() << ")";
     return stream;
 }
 
-Coord Rect::getCenter() {
+double RectByCoords::getHeight() {
+    return maxPoint.getY() - minPoint.getY();
+}
+
+double RectByCoords::getWidth() {
+    return maxPoint.getX() - minPoint.getX();
+}
+
+Coord RectByCoords::getCenter() {
     double centerX = (minPoint.getX() + maxPoint.getX()) / 2;
     double centerY = (minPoint.getY() + maxPoint.getY()) / 2;
     return { centerX, centerY };
 }
 
-Rect& Rect::operator=(const Rect& r) {
+RectByCoords& RectByCoords::operator=(const RectByCoords& r) {
     this->minPoint = r.minPoint;
     this->maxPoint = r.maxPoint;
     return *this;
 }
 
-bool Rect::isValid() const {
+bool RectByCoords::isValid() const {
     return minPoint.getX() < maxPoint.getX() && minPoint.getY() < maxPoint.getY();
 }
 
-bool Rect::contain(const Coord& coord) const {
+bool RectByCoords::contain(const Coord& coord) const {
     return coord.getX() <= maxPoint.getX() && coord.getX() >= minPoint.getX() && coord.getY() <= maxPoint.getY() && coord.getY() >= minPoint.getY();
 }
 

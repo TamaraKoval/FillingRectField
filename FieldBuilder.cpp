@@ -7,7 +7,7 @@ void nextDir(Direction& dir) {
     dir = static_cast<Direction>(curr);
 }
 
-void FieldBuilder::setCenterCoord(Direction& dir, Rect& checkingField, Bolt& b, bool first) {
+void FieldBuilder::setCenterCoord(Direction& dir, RectByCoords& checkingField, Bolt& b, bool first) {
     Coord center;
     double rad = first ? b.getInnerRad() / 2 : b.getOutterRad() / 2;
     switch (dir) {
@@ -47,7 +47,7 @@ void FieldBuilder::shiftBoltCenter(Direction& dir, Obstruction& obstruction, Bol
     b.setCenter(center);
 }
 
-Rect FieldBuilder::narrowedFirstField(vector<Bolt>& currentLevel, bool& first) {
+RectByCoords FieldBuilder::narrowedFirstField(vector<Bolt>& currentLevel, bool& first) {
     double maxPotencial = 0;
     for (Bolt b : currentLevel) {
         if (b.calcPotencial() > maxPotencial) maxPotencial = b.calcPotencial();
@@ -57,20 +57,20 @@ Rect FieldBuilder::narrowedFirstField(vector<Bolt>& currentLevel, bool& first) {
     return { baseField.getMinPoint() + potencialCoord, baseField.getMaxPoint() - potencialCoord };
 }
 
-Rect FieldBuilder::narrowedNextField(vector<Bolt>& currentLevel, Rect& field) {
+RectByCoords FieldBuilder::narrowedNextField(vector<Bolt>& currentLevel, RectByCoords& field) {
     double shift = max_element(currentLevel.begin(), currentLevel.end())->getOutterRad();
     Coord shiftedValue(shift, shift);
     return { field.getMinPoint() + shiftedValue, field.getMaxPoint() - shiftedValue };
 }
 
-bool FieldBuilder::narrowField(Rect& checkingField, vector<Bolt>& currentLevel, bool& first, int& blockedSidesCount) {
+bool FieldBuilder::narrowField(RectByCoords& checkingField, vector<Bolt>& currentLevel, bool& first, int& blockedSidesCount) {
     checkingField = first ? narrowedFirstField(currentLevel, first) : narrowedNextField(currentLevel, checkingField);
     currentLevel.clear();
     blockedSidesCount = 0;
     return checkingField.isValid();
 }
 
-bool FieldBuilder::doubleTryForCentering(Direction dir, Rect& checkingField, vector<Obstruction>& obstructionsToCheck,
+bool FieldBuilder::doubleTryForCentering(Direction dir, RectByCoords& checkingField, vector<Obstruction>& obstructionsToCheck,
     Bolt& b, bool first) {
     int experiment = 2;
     while (experiment) {
@@ -87,12 +87,12 @@ bool FieldBuilder::doubleTryForCentering(Direction dir, Rect& checkingField, vec
     return true;
 }
 
-bool FieldBuilder::putOneInCenter(Rect& checkingField, vector<Obstruction>& obstructionsToCheck, Bolt& b, bool first) {
+bool FieldBuilder::putOneInCenter(RectByCoords& checkingField, vector<Obstruction>& obstructionsToCheck, Bolt& b, bool first) {
     b.setCenter(checkingField.getCenter());
     return doubleTryForCentering(RIGHT, checkingField, obstructionsToCheck, b, first);
 }
 
-bool FieldBuilder::putTwoInCenter(Rect& checkingField, vector<Obstruction>& obstructionsToCheck, Bolt& less, Bolt& more,
+bool FieldBuilder::putTwoInCenter(RectByCoords& checkingField, vector<Obstruction>& obstructionsToCheck, Bolt& less, Bolt& more,
     bool first) {
     Coord lessCenter, moreCenter;
     Coord center = checkingField.getCenter();
@@ -131,7 +131,7 @@ bool FieldBuilder::build() {
 
     enum Direction dir = RIGHT;
 
-    Rect checkingField = baseField;
+    RectByCoords checkingField = baseField;
     bool firstNarrow = true;
     int blockedSidesCount = 0;
     vector<Bolt> currentLevel;

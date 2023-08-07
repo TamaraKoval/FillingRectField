@@ -47,28 +47,28 @@ double Bolt::calcPotencial() {
     return head.getInnerRad() / 2 + head.getOutterRad() / 2;
 }
 
-bool Bolt::outterCircleInside(const Rect& field) {
+bool Bolt::outterCircleInside(const RectByCoords& field) {
     for (Coord c : outterVertices) {
         if (!field.contain(c)) return false;
     }
     return innerCircleInside(field);
 }
 
-bool Bolt::innerCircleInside(const Rect& field) {
+bool Bolt::innerCircleInside(const RectByCoords& field) {
     for (Coord c : innerVertices) {
         if (!field.contain(c)) return false;
     }
     return true;
 }
 
-bool Bolt::allInside(const Rect& field, bool checkInner) {
+bool Bolt::allInside(const RectByCoords& field, bool checkInner) {
     if (!field.contain(center)) return false;
     if (checkInner) return innerCircleInside(field);
     return outterCircleInside(field);
 }
 
 bool Bolt::intersect(const Obstruction& obstruction) {
-    Rect rect = obstruction.getBorders();
+    RectByCoords rect = obstruction.getBorders();
     if (rect.contain(center)) return true;
     if (obstruction.isHard()) {
         for (Coord c : outterVertices) {
@@ -81,7 +81,7 @@ bool Bolt::intersect(const Obstruction& obstruction) {
     return false;
 }
 
-Rect Bolt::turnIntoRect() {
+RectByCoords Bolt::turnIntoRect() {
     double shift = head.getOutterRad() / 2;
     Coord min(center.getX() - shift, center.getY() - shift);
     Coord max(center.getX() + shift, center.getY() + shift);
@@ -92,4 +92,3 @@ void Bolt::showInfo() {
     std::cout << "Внутренний r: " << head.getInnerRad() << ", внешний r: " << head.getOutterRad() <<
         ". Центр: " << center << std::endl;
 }
-
