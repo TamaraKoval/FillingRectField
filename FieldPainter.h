@@ -21,5 +21,5 @@ class FieldPainter {
 public:
     FieldPainter() = default;
     explicit FieldPainter(const FieldBuilder& builder);
-    void draw();
+    bool draw();
 };

@@ -19,17 +19,19 @@ public:
 class Bolt : public Validator {
     DoubleCircle head;
     Coord center;
+    int id;
     vector<Coord> innerVertices, outterVertices;
     void enteringAxialVertices(double leg, vector<Coord>& v);
     void enteringVertices(double leg1, double leg2, vector<Coord>& v);
     void setVertices(double rad, vector<Coord>& v);
 public:
     Bolt() = default;
-    explicit Bolt(DoubleCircle circle) : head(std::move(circle)), center(0, 0) {}
+    Bolt(DoubleCircle circle, int i = 0) : head(std::move(circle)), center(0, 0), id(i) {}
     void setCenter(Coord coord);
     [[nodiscard]] Coord getCenter() const { return center; }
     [[nodiscard]] double getInnerRad() const { return head.getInnerRad(); }
     [[nodiscard]] double getOutterRad() const { return head.getOutterRad(); }
+    [[nodiscard]] int getID() const { return id; }
     bool operator<(const Bolt& b) const { return head < b.head; }
     bool operator>(const Bolt& b) const { return head > b.head; }
     [[nodiscard]] bool isValid() const override;

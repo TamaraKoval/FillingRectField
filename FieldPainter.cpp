@@ -29,8 +29,7 @@ void FieldPainter::printCircle(const Mat& image, const Coord& center, int rad, S
 	circle(image, pCenter, rad, colour, thickness);
 }
 
-void FieldPainter::draw() {
-	
+bool FieldPainter::draw() {
 	Mat image(side, side, CV_8UC3, Scalar(255, 255, 255));
 
 	line(image, Point(0, side / 2), Point(side, side / 2), axisColour, 1);
@@ -50,5 +49,5 @@ void FieldPainter::draw() {
 	Mat flipped;
 	flip(image, flipped, 0);
 
-	imwrite("circletest.bmp", flipped);
+	return imwrite("output.bmp", flipped);
 }

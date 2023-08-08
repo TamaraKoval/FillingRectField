@@ -25,9 +25,11 @@ class FieldBuilder {
     static bool putOneInCenter(RectByCoords& checkingField, vector<Obstruction>& obstructionsToCheck, Bolt& b, bool first);
     static bool putTwoInCenter(RectByCoords& checkingField, vector<Obstruction>& obstructionsToCheck, Bolt& less, Bolt& more, bool first);
 public:
+    FieldBuilder() = default;
     explicit FieldBuilder(const RectByCoords& field) : baseField(field) {}
-    void setObstruction(const Obstruction& rect);
-    void addBolt(const Bolt& bolt);
+    bool setField(const RectByCoords& rect);
+    bool setObstruction(const Obstruction& rect);
+    bool addBolt(const Bolt& bolt);
     bool build();
     [[nodiscard]] RectByCoords getbasefield() const { return baseField; }
     [[nodiscard]] vector<Obstruction> getObstructions() const { return obstructions; }

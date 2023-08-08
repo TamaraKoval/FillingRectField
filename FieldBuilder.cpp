@@ -109,12 +109,28 @@ bool FieldBuilder::putTwoInCenter(RectByCoords& checkingField, vector<Obstructio
     return false;
 }
 
-void FieldBuilder::setObstruction(const Obstruction& rect) {
-    if (rect.isValid()) obstructions.push_back(rect);
+bool FieldBuilder::setField(const RectByCoords& rect) {
+    if (rect.isValid()) {
+        baseField = rect;
+        return true;
+    }
+    return false;
 }
 
-void FieldBuilder::addBolt(const Bolt& bolt) {
-    if (bolt.isValid()) bolts.push_back(bolt);
+bool FieldBuilder::setObstruction(const Obstruction& rect) {
+    if (rect.isValid()) {
+        obstructions.push_back(rect);
+        return true;
+    }
+    return false;
+}
+
+bool FieldBuilder::addBolt(const Bolt& bolt) {
+    if (bolt.isValid()) {
+        bolts.push_back(bolt);
+        return true;
+    }
+    return false;
 }
 
 bool FieldBuilder::build() {
@@ -190,5 +206,8 @@ bool FieldBuilder::build() {
             }
         }
     }
+    sort(installedBolts.begin(), installedBolts.end(), [](Bolt& a, Bolt& b) {
+        return a.getID() < b.getID();
+        });
     return true;
 }
