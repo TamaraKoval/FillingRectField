@@ -49,5 +49,5 @@ bool FieldPainter::draw() {
 	Mat flipped;
 	flip(image, flipped, 0);
 
-	return imwrite("circletest666.bmp", flipped);
+	return imwrite("output.bmp", flipped);
 }
