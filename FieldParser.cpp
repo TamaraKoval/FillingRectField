@@ -4,7 +4,7 @@
 
 bool FieldParser::getDataFromXML(FieldBuilder& builder) {
 
-    TiXmlDocument doc("input.xml");
+    TiXmlDocument doc("input6.xml");
     if (doc.LoadFile()) {
         TiXmlElement* root = doc.FirstChildElement("data");
   

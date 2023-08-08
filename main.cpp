@@ -6,6 +6,7 @@
 #include "FieldParser.h"
 
 int main() {
+    
     setlocale(LC_ALL, "Russian");
 
     FieldBuilder builder;
@@ -21,7 +22,8 @@ int main() {
         else {
             std::cout << "Ошибка при генерации чертежа" << std::endl;
         }
-    } else {
+    }
+    else {
         std::cout << "Не удалось считать файл";
     }
 

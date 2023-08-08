@@ -189,9 +189,9 @@ bool FieldBuilder::build() {
                         blockedSidesCount++;
                         if (blockedSidesCount == 4) {
                             if (!narrowField(checkingField, currentLevel, firstNarrow, blockedSidesCount)) return false;
-                            nextDir(dir);
-                            break;
                         }
+                        nextDir(dir);
+                        break;
                     }
                 }
                 if (intersectionFound) j = -1;
