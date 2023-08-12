@@ -1,25 +1,26 @@
 #pragma once
-#include <opencv2/opencv.hpp>
+#include <windows.h>
+#include <gdiplus.h>
+#include <gdiplusimaging.h>
 #include "FieldBuilder.h"
 #include "Objects.h"
+#pragma comment (lib,"gdiplus.lib")
 
-using namespace cv;
+using namespace Gdiplus;
 
 class FieldPainter {
-    int side = 500;
-    RectByCoords baseField;
-    vector<Obstruction> obstructions;
-    vector<Bolt> bolts;
-    Scalar borderColour = Scalar(0, 0, 0);
-    Scalar rectColour = Scalar(185, 184, 255);
-    Scalar bigCircleColour = Scalar(255, 107, 73);
-    Scalar littleCircleColour = Scalar(255, 226, 187);
-    Scalar axisColour = Scalar(188, 239, 255);
-    Coord convert(const Coord& coord);
-    void printRect(const Mat& image, const RectByCoords& rect, Scalar colour, int thickness);
-    void printCircle(const Mat& image, const Coord& center, int rad, Scalar colour, int thickness);
+	int side = 500;
+	RectByCoords baseField;
+	vector<Obstruction> obstructions;
+	vector<Bolt> bolts;
+	Color borderColor = Color(255, 0, 0, 0);
+	Color rectColor = Color(255, 185, 184, 255);
+	Color bigCircleColor = Color(255, 255, 107, 73);
+	Color littleCircleColor = Color(255, 255, 226, 187);
+	Color axisColor = Color(255, 255, 239, 188);
+	void printRect(Graphics& graphics, Pen& pen, const RectByCoords& rect);
 public:
-    FieldPainter() = default;
-    explicit FieldPainter(const FieldBuilder& builder);
-    bool draw();
+	FieldPainter() = default;
+	explicit FieldPainter(const FieldBuilder& builder);
+	bool draw();
 };

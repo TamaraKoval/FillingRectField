@@ -25,7 +25,6 @@ public:
     [[nodiscard]] virtual bool isValid() const = 0;
 };
 
-
 class RectByCoords : public Validator {
     Coord minPoint, maxPoint;
 public:
@@ -37,8 +36,8 @@ public:
     [[nodiscard]] double getLeft() const { return minPoint.getX(); }
     [[nodiscard]] double getBottom() const { return minPoint.getY(); }
     [[nodiscard]] double getRight() const { return maxPoint.getX(); }
-    double getHeight();
-    double getWidth();
+    double getHeight() const;
+    double getWidth() const;
     Coord getCenter();
     RectByCoords& operator=(const RectByCoords& r);
     [[nodiscard]] bool isValid() const override;

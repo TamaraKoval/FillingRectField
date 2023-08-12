@@ -46,11 +46,11 @@ std::ostream& operator<<(std::ostream& stream, Coord& coords) {
     return stream;
 }
 
-double RectByCoords::getHeight() {
+double RectByCoords::getHeight() const {
     return maxPoint.getY() - minPoint.getY();
 }
 
-double RectByCoords::getWidth() {
+double RectByCoords::getWidth() const {
     return maxPoint.getX() - minPoint.getX();
 }
 

@@ -1,5 +1,7 @@
 #include "FieldPainter.h"
 
+using namespace Gdiplus;
+
 FieldPainter::FieldPainter(const FieldBuilder& builder) {
 	baseField = builder.getbasefield();
 	obstructions = builder.getObstructions();
@@ -9,45 +11,81 @@ FieldPainter::FieldPainter(const FieldBuilder& builder) {
 	if (abs(baseField.getRight()) > side) side = abs(baseField.getRight());
 	if (abs(baseField.getLeft()) > side) side = abs(baseField.getLeft());
 	if (abs(baseField.getBottom()) > side) side = abs(baseField.getBottom());
-	side  = (side + 50) * 4;
+	side = (side + 50) * 4;
 }
 
-Coord FieldPainter::convert(const Coord& coord) {
-	double x = coord.getX() * 2;
-	double y = coord.getY() * 2;
-	return { side / 2 + x, side / 2 + y };
+int GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
+	UINT num = 0;
+	UINT size = 0;
+
+	ImageCodecInfo* pImageCodecInfo = nullptr;
+
+	GetImageEncodersSize(&num, &size);
+	if (size == 0) {
+		return -1;
+	}
+
+	pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
+	if (pImageCodecInfo == nullptr) {
+		return -1;
+	}
+
+	GetImageEncoders(num, size, pImageCodecInfo);
+
+	for (UINT j = 0; j < num; ++j) {
+		if (pImageCodecInfo[j].MimeType != nullptr && wcscmp(pImageCodecInfo[j].MimeType, format) == 0) {
+			*pClsid = pImageCodecInfo[j].Clsid;
+			free(pImageCodecInfo);
+			return j;
+		}
+	}
+
+	free(pImageCodecInfo);
+	return -1; 
 }
 
-void FieldPainter::printRect(const Mat& image, const RectByCoords& rect, Scalar colour, int thickness) {
-	Point endRect(convert(rect.getMinPoint()).getX(), convert(rect.getMinPoint()).getY());
-	Point startRect(convert(rect.getMaxPoint()).getX(), convert(rect.getMaxPoint()).getY());
-	rectangle(image, endRect, startRect, colour, thickness);
-}
+void FieldPainter::printRect(Graphics& graphics, Pen& pen, const RectByCoords& rect) {
+	int width = rect.getWidth() * 2;
+	int height = rect.getHeight() * 2;
 
-void FieldPainter::printCircle(const Mat& image, const Coord& center, int rad, Scalar colour, int thickness) {
-	Point pCenter(convert(center).getX(), convert(center).getY());
-	circle(image, pCenter, rad, colour, thickness);
+	int newX = (side / 2) + rect.getMinPoint().getX() * 2;
+	int newY = (side / 2) - rect.getMaxPoint().getY() * 2;
+
+	graphics.DrawRectangle(&pen, newX, newY, width, height);
 }
 
 bool FieldPainter::draw() {
-	Mat image(side, side, CV_8UC3, Scalar(255, 255, 255));
 
-	line(image, Point(0, side / 2), Point(side, side / 2), axisColour, 1);
-	line(image, Point(side / 2, 0), Point(side / 2, side), axisColour, 1);
-
-	printRect(image, baseField, borderColour, 2);
-
-	for (Obstruction& obs : obstructions) {
-		printRect(image, obs.getBorders(), rectColour, -1);
+	GdiplusStartupInput gdiplusStartupInput;
+	gdiplusStartupInput.GdiplusVersion = 1;
+	ULONG_PTR gdiplusToken;
+	Status status = GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
+	if (status != Status::Ok) {
+		return false;
 	}
 
-	for (Bolt& b : bolts) {
-		printCircle(image, b.getCenter(), b.getInnerRad(), littleCircleColour, 1);
-		printCircle(image, b.getCenter(), b.getOutterRad(), bigCircleColour, 2);
-	}
+	Bitmap bmp(side, side, PixelFormat32bppARGB);
+	Graphics graphics(&bmp);
+	graphics.Clear(Color::White);
 
-	Mat flipped;
-	flip(image, flipped, 0);
+	Pen pen(axisColor);
+	graphics.DrawLine(&pen, 0, side / 2, side, side / 2);
+	graphics.DrawLine(&pen, side / 2, 0, side / 2, side);
 
-	return imwrite("output.bmp", flipped);
+	pen.SetColor(borderColor);
+	pen.SetWidth(2);
+	printRect(graphics, pen, baseField);
+
+	Bitmap convertedBmp(side, side, PixelFormat24bppRGB);
+	Graphics convGraphics(&convertedBmp);
+	convGraphics.DrawImage(&bmp, 0, 0, side, side);
+
+	CLSID encoderClsid;
+	GetEncoderClsid(L"image/bmp", &encoderClsid);
+	convertedBmp.Save(L"image.bmp", &encoderClsid);
+
+	GdiplusShutdown(gdiplusToken);
+
+	return true;
+
 }
