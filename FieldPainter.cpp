@@ -33,7 +33,7 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
 	GetImageEncoders(num, size, pImageCodecInfo);
 
 	for (UINT j = 0; j < num; ++j) {
-		if (pImageCodecInfo[j].MimeType != nullptr && wcscmp(pImageCodecInfo[j].MimeType, format) == 0) {
+		if (pImageCodecInfo[j].MimeType != nullptr && format != nullptr && wcscmp(pImageCodecInfo[j].MimeType, format) == 0) {
 			*pClsid = pImageCodecInfo[j].Clsid;
 			free(pImageCodecInfo);
 			return j;
@@ -81,7 +81,7 @@ bool FieldPainter::draw() {
 		return false;
 	}
 
-	Bitmap bmp(side, side, PixelFormat32bppARGB);
+	Bitmap bmp(side, side, PixelFormat24bppRGB);
 	Graphics graphics(&bmp);
 	graphics.Clear(Color::White);
 
@@ -105,15 +105,14 @@ bool FieldPainter::draw() {
 	for (Bolt& b : bolts) {
 		printDoubleCircle(graphics, pen, pen2, b);
 	}
-	
-
-	Bitmap convertedBmp(side, side, PixelFormat24bppRGB);
-	Graphics convGraphics(&convertedBmp);
-	convGraphics.DrawImage(&bmp, 0, 0, side, side);
 
 	CLSID encoderClsid;
 	GetEncoderClsid(L"image/bmp", &encoderClsid);
-	convertedBmp.Save(L"image.bmp", &encoderClsid);
+	status = bmp.Save(L"image.bmp", &encoderClsid);
+	if (status != Status::Ok) {
+		GdiplusShutdown(gdiplusToken);
+		return false;
+	}
 
 	GdiplusShutdown(gdiplusToken);
 

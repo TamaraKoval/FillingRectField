@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <gdiplus.h>
-#include <gdiplusimaging.h>
+
 #include "FieldBuilder.h"
 #include "Objects.h"
 #pragma comment (lib,"gdiplus.lib")
