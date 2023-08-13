@@ -54,7 +54,7 @@ double RectByCoords::getWidth() const {
     return maxPoint.getX() - minPoint.getX();
 }
 
-Coord RectByCoords::getCenter() {
+Coord RectByCoords::getCenter() const{
     double centerX = (minPoint.getX() + maxPoint.getX()) / 2;
     double centerY = (minPoint.getY() + maxPoint.getY()) / 2;
     return { centerX, centerY };

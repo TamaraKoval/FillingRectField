@@ -38,7 +38,7 @@ public:
     [[nodiscard]] double getRight() const { return maxPoint.getX(); }
     double getHeight() const;
     double getWidth() const;
-    Coord getCenter();
+    Coord getCenter() const;
     RectByCoords& operator=(const RectByCoords& r);
     [[nodiscard]] bool isValid() const override;
     [[nodiscard]] bool contain(const Coord& coord) const;
